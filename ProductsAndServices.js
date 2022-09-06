@@ -11,7 +11,9 @@ const fs = require('fs');
 router.use(express.json());
 //storage for photos
 const Storage = multer.diskStorage({
-    destination:'uploads',
+    destination: (req, file, cb) => {
+        cb(null, "uploads");
+      },
     filename:(req,file,cb)=>{
         cb(null,file.originalname);
     },
@@ -112,8 +114,8 @@ router.post('/products/add' ,  async(req,res)=>{
                 const Price = req.body.Price;
                 const Description = req.body.Description;
                 const Availability = req.body.Availability;
-                const ProductImage = { data: req.file.filename,
-                                      contentType: 'image/png'}
+                const ProductImage = { data: fs.readFileSync( "uploads/"+ req.file.filename) ,
+                contentType: 'image/png'}
                     const ProductObj = { Name , Price , Description , Availability, ProductImage};
                     const products = new Products(ProductObj);
                      products.save()
